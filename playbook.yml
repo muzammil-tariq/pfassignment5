@@ -1,0 +1,82 @@
+################################################## For All Servers ##################################################
+#Installing Docker,Docker Compose and  copying Docker  Files in  server 2 and 4  Server 
+-
+ name: Copying Files in Server 2 and 4
+ hosts: all
+
+# tasks
+
+ tasks:
+
+# Copy sh file to All nodes
+
+  - name: Copying Docker  File
+    copy: src=/home/muzammiltariq/testing-project/get-docker.sh dest=/root
+
+# Add Execute  Permission to sh file
+
+  - name: permitting sh File
+    command: chmod +x get-docker.sh chdir=/root
+
+# Installing Docker Using script
+
+  - name: Installing Docker
+    script: get-docker.sh 
+
+# Installing Docker Compose
+
+  - name: Installing Docker Compose
+    command: sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# Adding Permission to docker Compose
+
+  - name: Adding Permission
+    command: sudo chmod +x /usr/local/bin/docker-compose
+
+# Copy our Projects and Docker Files(for Building Image)
+ 
+  - name: Copy Docker File
+    copy: src=/home/muzammiltariq/testing-project/PFassignment4 dest=/root
+
+
+################################# For Specific Server 4 ###############################################
+
+-
+ name: Group 4 Server Docker 
+ hosts: target1
+
+# tasks
+
+ tasks:
+   
+# Building Image on Server 4
+
+   - name: Building Image
+     command: docker image build -t assignment5:latest . chdir=/root/PFassignment4
+
+# Building Container
+
+   - name: Building Container
+     command: docker container run -d -p 162.55.37.153:81:81 --name ass5 assignment5
+
+########################### For Specific Group 2 ################################################
+
+-
+ name: Group 2 Server Docker
+ hosts: target2
+
+# Tasks
+
+ tasks:
+
+# Building Image on Server 2
+  
+   - name: Building Image
+     command: docker image build -t assignment5:latest . chdir=/root/PFassignment4
+
+# Building Container 
+  
+   - name: Building Container
+     command: docker container run -d --name ass5 -p 157.90.146.147:81:81 assignment5
+
+   
